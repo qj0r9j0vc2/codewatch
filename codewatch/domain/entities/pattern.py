@@ -8,7 +8,7 @@ for representing relationships between patterns.
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any
 
 from ..enums import Framework, PatternType, RelationType
@@ -58,7 +58,7 @@ class Pattern(ABC):
         pass
 
 
-@dataclass(frozen=True, slots=True, kw_only=True)
+@dataclass(frozen=True, kw_only=True)
 class PatternRelation:
     """
     Relationship between two patterns.
@@ -86,12 +86,15 @@ class PatternRelation:
     Note:
         metadata dict values should be JSON-serializable primitives
         (str, int, float, bool, None, list, dict) for future persistence.
+
+        The metadata field does not participate in hashing or equality comparison,
+        allowing PatternRelation to be hashable despite containing a mutable dict.
     """
 
     source: Pattern
     target: Pattern
     relation_type: RelationType
-    metadata: dict[str, Any]
+    metadata: dict[str, Any] = field(default_factory=dict, compare=False, hash=False)
 
     def __post_init__(self) -> None:
         """Validate relation constraints."""
