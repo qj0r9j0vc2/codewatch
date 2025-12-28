@@ -47,7 +47,7 @@ class ConfidenceScore:
 
         # Normalize: Handle floating-point precision errors
         normalized_value = self.value
-        if -EPSILON < self.value < 0.0:
+        if -EPSILON <= self.value < 0.0:
             normalized_value = 0.0
         elif 1.0 < self.value <= 1.0 + EPSILON:
             normalized_value = 1.0
